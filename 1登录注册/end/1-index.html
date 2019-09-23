@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>登录注册</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #container {
+      width: 400px;
+      border: 1px #ccc solid;
+      border-radius: 2px;
+    }
+
+    #container .head {
+      display: flex;
+    }
+
+    #container .reg,
+    .log {
+      flex: 1;
+      list-style: none;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    [id^=row] {
+      display: flex;
+      padding: 0 60px;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    #username,
+    #password {
+      flex: 1;
+    }
+
+    [type=submit] {
+      margin: 0 auto;
+      -webkit-appearance: button;
+      font-size: 14px;
+      width: 50px;
+    }
+
+    #container .active {
+      background: #3487ff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container">
+    <ul class="head" onclick="select(event)">
+      <li class="reg">注册</li>
+      <li class="log active">登录</li>
+    </ul>
+    <form action="http://127.0.0.1:3000" method="get" id="o-form">
+      <div id="row1">
+        <label for="username">用户名：</label>
+        <input type="text" name="username" id="username" placeholder="请输入用户名">
+      </div>
+      <div id="row2">
+        <label for="password">密&nbsp;&nbsp;&nbsp;码：</label>
+        <input type="text" name="password" id="password" placeholder="请输入密码">
+      </div>
+      <div id="row3">
+        <input type="submit" value="登录" id="submit" onclick="handlerSubmit(event)">
+      </div>
+
+    </form>
+  </div>
+  <script>
+    var oLog = document.getElementsByClassName("log")[0]
+    var oReg = document.getElementsByClassName("reg")[0]
+    var oSubmit = document.getElementById("submit")
+    var oForm  = document.getElementById("o-form")
+    function select(event) {
+      if (event.target.innerHTML == "注册") {
+        oLog.classList.remove("active")
+        oReg.classList.add("active")
+        oSubmit.value = "注册"
+      } else {
+        oReg.classList.remove("active")
+        oLog.classList.add("active")
+        oSubmit.value = "登录"
+      }
+    }
+    function handlerSubmit(event) {
+      if (oSubmit.value == "注册") {
+        oForm.action = "http://127.0.0.1:3000/reg"
+      }else{
+        oForm.action = "http://127.0.0.1:3000/login"
+      }
+    }
+  </script>
+</body>
+
+</html>
