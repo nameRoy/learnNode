@@ -1,6 +1,7 @@
 const http = require('http')
 const url = require('url')
 const querystring = require('querystring')
+const fs = require('fs')
 let userDB = {hu:123}
 let server = http.createServer((req,res)=>{
   let path,username,password;
@@ -50,6 +51,17 @@ let server = http.createServer((req,res)=>{
         res.write(JSON.stringify({error:1,msg}))
         res.end()
       }
+    }else if(path == "/"){
+      fs.readFile('../end/1-index.html',(err,data)=>{
+        if(err){
+          res.writeHead(404)
+          res.write('not found')
+          res.end()
+        }else{
+          res.write(data)
+          res.end()
+        }
+      })
     }
   }
 })

@@ -61,31 +61,32 @@
       <li class="reg">注册</li>
       <li class="log active">登录</li>
     </ul>
-    <form action="http://127.0.0.1:3000" method="get" id="o-form">
-      <div id="row1">
-        <label for="username">用户名：</label>
-        <input type="text" name="username" id="username" placeholder="请输入用户名">
-      </div>
-      <div id="row2">
-        <label for="password">密&nbsp;&nbsp;&nbsp;码：</label>
-        <input type="text" name="password" id="password" placeholder="请输入密码">
-      </div>
-      <div id="row3">
-        <input type="submit" value="登录" id="submit" onclick="handlerSubmit(event)">
-      </div>
-
-    </form>
+    <div id="row1">
+      <label for="username">用户名：</label>
+      <input type="text" name="username" id="username" placeholder="请输入用户名" onblur="existIf(event)" onfocus="toBlank()">
+      <span id="toGood" style="color: red"></span>
+    </div>
+    <div id="row2">
+      <label for="password">密&nbsp;&nbsp;&nbsp;码：</label>
+      <input type="text" name="password" id="password" placeholder="请输入密码">
+    </div>
+    <div id="row3">
+      <input type="submit" value="登录" id="submit" onclick="handlerSubmit(event)">
+    </div>
   </div>
   <script>
     var oLog = document.getElementsByClassName("log")[0]
     var oReg = document.getElementsByClassName("reg")[0]
     var oSubmit = document.getElementById("submit")
-    var oForm  = document.getElementById("o-form")
+    var oUsername = document.getElementById("username")
+    var oPassword = document.getElementById("password")
     function select(event) {
       if (event.target.innerHTML == "注册") {
         oLog.classList.remove("active")
         oReg.classList.add("active")
         oSubmit.value = "注册"
+        oUsername.focus()
+        oUsername.blur()
       } else {
         oReg.classList.remove("active")
         oLog.classList.add("active")
@@ -93,11 +94,75 @@
       }
     }
     function handlerSubmit(event) {
+      let xmlHttp = new XMLHttpRequest();
       if (oSubmit.value == "注册") {
-        oForm.action = "http://127.0.0.1:3000/reg"
-      }else{
-        oForm.action = "http://127.0.0.1:3000/login"
+        let username = oUsername.value
+        let password = oPassword.value
+        xmlHttp.open("get", "http://127.0.0.1:3000/reg?username=" + username + "&password=" + password)
+        xmlHttp.send()
+        xmlHttp.onreadystatechange = function () {
+          if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            let { error, msg } = JSON.parse(xmlHttp.responseText)
+            if (!error) {
+              alert("恭喜你注册成功了")
+            } else {
+              switch (msg) {
+                case 'already': alert("该用户名已经存在了")
+                  break;
+                case 'toFull': alert("请你填完整")
+                  break;
+                default:
+                  break;
+              }
+            }
+          }
+        }
+      } else {
+        let username = oUsername.value
+        let password = oPassword.value
+        xmlHttp.open("get", "http://127.0.0.1:3000/login?username=" + username + "&password=" + password)
+        xmlHttp.send()
+        xmlHttp.onreadystatechange = function () {
+          if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            let { error, msg } = JSON.parse(xmlHttp.responseText)
+            if (!error) {
+              alert("登录成功")
+            } else {
+              switch (msg) {
+                case 'no': alert("用户名不存在请注册")
+                  break;
+                case 'incorrect': alert("用户密码不对")
+                  break;
+                default:
+                  break;
+              }
+            }
+          }
+        }
       }
+    }
+    function existIf(e) {
+      let username = oUsername.value
+      let password = oPassword.value
+      let xmlHttp = new XMLHttpRequest()
+      xmlHttp.open("get", "http://127.0.0.1:3000/reg?username=" + username + "&password=" + password)
+      xmlHttp.send()
+      if (oSubmit.value == "注册") {
+        xmlHttp.onreadystatechange = function () {
+          if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var response = JSON.parse(xmlHttp.responseText)
+            let { error, msg } = response
+            if (msg == "already") {
+              var oToGood = document.getElementById('toGood')
+              oToGood.innerText = "已存在！"
+            }
+          }
+        }
+      }
+    }
+    function toBlank() {
+      var oToGood = document.getElementById('toGood')
+      oToGood.innerText = ""
     }
   </script>
 </body>
