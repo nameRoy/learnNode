@@ -7,11 +7,11 @@ let server = http.createServer((req,res)=>{
 server.listen(3000,()=>{console.log('serve on 3000')})
 let io = new Server(server);
 io.on('connection', function (socket) {
-  socket.on("aa",(a,b)=>{
-    console.log(a+b)
+  socket.on("sendmsg",(room,data)=>{
+    socket.broadcast.to(room).emit('receive',data+'\r\n')
   })
-  console.log('a user connected');
-  socket.on('disconnect', function () {
-    console.log('user disconnected');
-  });
+
+  socket.on("joinroom",data=>{
+    socket.join(data)
+  })
 });

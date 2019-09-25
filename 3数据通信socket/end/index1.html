@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>客户端1</title>
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+  <textarea name="" id="textbox" cols="30" rows="10"></textarea>
+  <br>
+  <input type="text" id="input" value="">
+  <input type="submit" id="sub" value="send">
+  <script>
+    var socket = io.connect("ws://localhost:3000")
+    var oInput = document.getElementById('input')
+    var oTextbox = document.getElementById('textbox')
+    var oSub = document.getElementById('sub')
+    socket.emit('joinroom',11)
+    oSub.addEventListener('click',e=>{
+      var sendMsg = oInput.value
+      oTextbox.value+=('客户一：'+sendMsg+'\r\n')
+      socket.emit("sendmsg",11,'客户一：'+sendMsg)
+      oInput.value = ""
+      return false
+    })
+    socket.on('receive',data=>{
+      oTextbox.value+=data
+    })
+    
+    
+  </script>
+</body>
+
+</html>
