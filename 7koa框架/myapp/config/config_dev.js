@@ -4,8 +4,8 @@ module.exports={
   dbCofig:{
     host: 'localhost',
     user: 'root',
-    password: 'hu1ming2xu3,',
-    database: 'small_server'
+    password: '12345678',
+    database: 'blog_db'
   },
   httpCofig:{
     httpPort:3000,
